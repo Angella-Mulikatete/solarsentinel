@@ -28,9 +28,6 @@ PURPLE   = "#8b5cf6"
 BASE_LAYOUT = dict(
     plot_bgcolor=PLOT_BG, paper_bgcolor=PLOT_BG,
     font=dict(family=FONT_FAM, color=TEXT_COL, size=12),
-    margin=dict(l=8, r=8, t=8, b=8),
-    xaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
-    yaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
 )
 
 layout = html.Div([
@@ -158,10 +155,12 @@ def update_wx_charts(plant_filter: str):
             opacity=0.8,
             hovertemplate="%{x|%d %b %H:%M}<br>Irradiation: %{y:.4f} W/m²<extra>" + plant + "</extra>",
         ))
-    fig1.update_layout(**BASE_LAYOUT,
+    fig1.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Irradiation (W/m²)",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig1.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig1.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Module temp vs Irradiation scatter ────────────────────────────────────
     fig2 = go.Figure()
@@ -175,10 +174,12 @@ def update_wx_charts(plant_filter: str):
             marker=dict(color=colors.get(plant, SOLAR), size=4, opacity=0.5),
             hovertemplate="Irradiation: %{x:.4f}<br>Module Temp: %{y:.1f}°C<extra>" + plant + "</extra>",
         ))
-    fig2.update_layout(**BASE_LAYOUT,
+    fig2.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         xaxis_title="Irradiation (W/m²)", yaxis_title="Module Temperature (°C)",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig2.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig2.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Performance ratio ─────────────────────────────────────────────────────
     fig3 = go.Figure()
@@ -197,10 +198,12 @@ def update_wx_charts(plant_filter: str):
                 marker=dict(size=5),
                 hovertemplate="%{x|%d %b}<br>Perf Ratio: %{y:.3f}<extra>" + plant + "</extra>",
             ))
-    fig3.update_layout(**BASE_LAYOUT,
+    fig3.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Performance Ratio",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig3.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig3.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Daily peak irradiation ────────────────────────────────────────────────
     fig4 = go.Figure()
@@ -214,10 +217,12 @@ def update_wx_charts(plant_filter: str):
             name=plant, marker_color=colors.get(plant, SOLAR), opacity=0.8,
             hovertemplate="%{x|%d %b}<br>Peak Irr: %{y:.4f} W/m²<extra>" + plant + "</extra>",
         ))
-    fig4.update_layout(**BASE_LAYOUT,
+    fig4.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Peak Irradiation (W/m²)", barmode="group",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig4.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig4.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Irradiation heatmap ───────────────────────────────────────────────────
     wx_day = weather[weather["IRRADIATION"] > 0].copy()
@@ -238,11 +243,8 @@ def update_wx_charts(plant_filter: str):
         showscale=True,
         colorbar=dict(thickness=12, tickfont=dict(color=TEXT_COL, size=10), outlinecolor="rgba(0,0,0,0)"),
     ))
-    fig5.update_layout(
-        **{k: v for k, v in BASE_LAYOUT.items() if k not in ("xaxis", "yaxis")},
-        xaxis=dict(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)"),
-        yaxis=dict(autorange="reversed", tickfont=dict(size=10), gridcolor="rgba(0,0,0,0)"),
-        margin=dict(l=60, r=20, t=8, b=80),
-    )
+    fig5.update_layout(**BASE_LAYOUT, margin=dict(l=60, r=20, t=8, b=80))
+    fig5.update_xaxes(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)")
+    fig5.update_yaxes(autorange="reversed", tickfont=dict(size=10), gridcolor="rgba(0,0,0,0)")
 
     return fig1, fig2, fig3, fig4, fig5

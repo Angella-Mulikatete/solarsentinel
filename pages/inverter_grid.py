@@ -30,10 +30,16 @@ RED      = "#ef4444"
 BASE_LAYOUT = dict(
     plot_bgcolor=PLOT_BG, paper_bgcolor=PLOT_BG,
     font=dict(family=FONT_FAM, color=TEXT_COL, size=12),
-    margin=dict(l=8, r=8, t=8, b=8),
-    xaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
-    yaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
 )
+
+
+def _theme(fig, margin=None, xaxis_kw=None, yaxis_kw=None):
+    """Apply common dark theme to a figure without keyword conflicts."""
+    m = margin or dict(l=8, r=8, t=8, b=8)
+    fig.update_layout(**BASE_LAYOUT, margin=m)
+    fig.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL, **(xaxis_kw or {}))
+    fig.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL, **(yaxis_kw or {}))
+    return fig
 
 # Inverter dropdown options
 inv_options_p1 = [
@@ -173,11 +179,11 @@ def update_heatmap(_plant):
         ),
     ))
     fig_heat.update_layout(
-        **{k: v for k, v in BASE_LAYOUT.items() if k not in ("xaxis", "yaxis")},
-        xaxis=dict(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)"),
-        yaxis=dict(tickfont=dict(size=11), gridcolor="rgba(0,0,0,0)"),
+        **BASE_LAYOUT,
         margin=dict(l=70, r=20, t=8, b=90),
     )
+    fig_heat.update_xaxes(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)")
+    fig_heat.update_yaxes(tickfont=dict(size=11), gridcolor="rgba(0,0,0,0)")
 
     # ── Efficiency ranking bar ────────────────────────────────────────────────
     inv_sorted = inv.sort_values("AVG_EFFICIENCY")
@@ -193,11 +199,9 @@ def update_heatmap(_plant):
     ))
     fig_rank.add_hline(y=90, line_dash="dash", line_color="rgba(245,158,11,0.5)",
                        annotation_text="90% threshold", annotation_font_color=SOLAR)
-    fig_rank.update_layout(**BASE_LAYOUT,
-        xaxis=dict(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)"),
-        yaxis=dict(range=[70, 105], gridcolor=GRID_COL, title="Efficiency (%)"),
-        margin=dict(l=50, r=8, t=8, b=80),
-    )
+    fig_rank.update_layout(**BASE_LAYOUT, margin=dict(l=50, r=8, t=8, b=80))
+    fig_rank.update_xaxes(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)")
+    fig_rank.update_yaxes(range=[70, 105], gridcolor=GRID_COL, title="Efficiency (%)")
 
     return status_pills, fig_heat, fig_rank
 
@@ -235,6 +239,8 @@ def update_timeseries(source_key: str):
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
         title=dict(text=f"Inverter {inv_id}  ·  {plant_label}", font=dict(size=13, color="#e8f0fe"), x=0),
     )
+    fig.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
     return fig
 
 
@@ -258,10 +264,8 @@ def update_boxplot(plant_label: str):
             boxmean=True,
             hovertemplate="Inverter: %{x}<br>Daily Yield: %{y:.1f} kWh<extra></extra>",
         ))
-    fig.update_layout(**BASE_LAYOUT,
-        yaxis_title="Daily Yield (kWh)",
-        xaxis=dict(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)"),
-        showlegend=False,
-        margin=dict(l=50, r=8, t=8, b=80),
-    )
+    fig.update_layout(**BASE_LAYOUT, showlegend=False, margin=dict(l=50, r=8, t=8, b=80),
+        yaxis_title="Daily Yield (kWh)")
+    fig.update_xaxes(tickangle=-45, tickfont=dict(size=9), gridcolor="rgba(0,0,0,0)")
+    fig.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
     return fig

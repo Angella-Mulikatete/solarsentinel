@@ -30,9 +30,6 @@ PURPLE   = "#8b5cf6"
 BASE_LAYOUT = dict(
     plot_bgcolor=PLOT_BG, paper_bgcolor=PLOT_BG,
     font=dict(family=FONT_FAM, color=TEXT_COL, size=12),
-    margin=dict(l=8, r=8, t=8, b=8),
-    xaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
-    yaxis=dict(gridcolor=GRID_COL, zerolinecolor=GRID_COL),
 )
 
 # Pre-compute cumulative yield per plant
@@ -203,10 +200,12 @@ def build_charts(_):
             fillcolor="rgba(245,158,11,0.08)" if plant == "Plant 1" else "rgba(59,130,246,0.08)",
             hovertemplate="%{x|%d %b}<br>Cumulative: %{y:.1f} MWh<extra>" + plant + "</extra>",
         ))
-    fig1.update_layout(**BASE_LAYOUT,
+    fig1.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Cumulative MWh",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig1.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig1.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Daily efficiency ──────────────────────────────────────────────────────
     gen_daytime = _gen[_gen["DC_POWER"] > 0].copy()
@@ -225,11 +224,13 @@ def build_charts(_):
         ))
     fig2.add_hline(y=90, line_dash="dash", line_color="rgba(245,158,11,0.4)",
                    annotation_text="90% baseline", annotation_font_color=SOLAR)
-    fig2.update_layout(**BASE_LAYOUT,
+    fig2.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Avg Efficiency (%)",
         yaxis_range=[80, 102],
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig2.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig2.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL, range=[80, 102])
 
     # ── DC vs AC (Plant 1) ────────────────────────────────────────────────────
     p1_daily = _daily[_daily["PLANT_LABEL"] == "Plant 1"].copy()
@@ -245,10 +246,12 @@ def build_charts(_):
         x=p1_daily["DATE"], y=p1_daily["AC_MWH"],
         name="AC Delivered", marker_color=GREEN, opacity=0.85,
     ))
-    fig3.update_layout(**BASE_LAYOUT,
+    fig3.update_layout(**BASE_LAYOUT, margin=dict(l=8, r=8, t=8, b=8),
         yaxis_title="Energy (MWh)", barmode="overlay",
         legend=dict(orientation="h", yanchor="bottom", y=1.01, x=0),
     )
+    fig3.update_xaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
+    fig3.update_yaxes(gridcolor=GRID_COL, zerolinecolor=GRID_COL)
 
     # ── Peak hour heatmap ─────────────────────────────────────────────────────
     gen_h = _gen[_gen["AC_POWER"] > 0].copy()
@@ -271,11 +274,8 @@ def build_charts(_):
         showscale=True,
         colorbar=dict(thickness=12, tickfont=dict(color=TEXT_COL, size=10), outlinecolor="rgba(0,0,0,0)"),
     ))
-    fig4.update_layout(
-        **{k: v for k, v in BASE_LAYOUT.items() if k not in ("xaxis", "yaxis")},
-        xaxis=dict(tickfont=dict(size=11), gridcolor="rgba(0,0,0,0)"),
-        yaxis=dict(autorange="reversed", tickfont=dict(size=10), gridcolor="rgba(0,0,0,0)"),
-        margin=dict(l=60, r=20, t=8, b=30),
-    )
+    fig4.update_layout(**BASE_LAYOUT, margin=dict(l=60, r=20, t=8, b=30))
+    fig4.update_xaxes(tickfont=dict(size=11), gridcolor="rgba(0,0,0,0)")
+    fig4.update_yaxes(autorange="reversed", tickfont=dict(size=10), gridcolor="rgba(0,0,0,0)")
 
     return fig1, fig2, fig3, fig4

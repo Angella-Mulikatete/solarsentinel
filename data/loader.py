@@ -22,8 +22,7 @@ P2_WX    = os.path.join(DATA_DIR, "Plant_2_Weather_Sensor_Data.csv")
 def _load_generation(path: str, plant_label: str) -> pd.DataFrame:
     """Load a generation CSV, parse timestamps, add plant label."""
     df = pd.read_csv(path)
-    # Format: "15-05-2020 00:00"
-    df["DATE_TIME"] = pd.to_datetime(df["DATE_TIME"], format="%d-%m-%Y %H:%M", errors="coerce")
+    df["DATE_TIME"] = pd.to_datetime(df["DATE_TIME"], format="mixed", errors="coerce")
     df["PLANT_LABEL"] = plant_label
     df = df.dropna(subset=["DATE_TIME"])
     return df
@@ -32,8 +31,7 @@ def _load_generation(path: str, plant_label: str) -> pd.DataFrame:
 def _load_weather(path: str, plant_label: str) -> pd.DataFrame:
     """Load a weather CSV, parse timestamps, add plant label."""
     df = pd.read_csv(path)
-    # Format: "2020-05-15 00:00:00"
-    df["DATE_TIME"] = pd.to_datetime(df["DATE_TIME"], errors="coerce")
+    df["DATE_TIME"] = pd.to_datetime(df["DATE_TIME"], format="mixed", errors="coerce")
     df["PLANT_LABEL"] = plant_label
     df = df.dropna(subset=["DATE_TIME"])
     return df

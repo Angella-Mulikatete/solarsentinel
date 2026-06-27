@@ -198,13 +198,5 @@ gunicorn>=21.2.0
 | Engineering operations room aesthetic | ✅ Dark ops theme |
 | Real (not simulated) dataset | ✅ Kaggle India Solar Plant |
 
----
-
-## 👩‍💻 Author
-
-Built for the **Python Data Visualisation Sprint** hackathon.  
-Dataset credit: [Afroz Chakure — Kaggle](https://www.kaggle.com/datasets/anikannal/solar-power-generation-data)
-
----
 
 *"If it doesn't look like something from an engineering operations room, the brief was too small."*
