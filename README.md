@@ -198,5 +198,3 @@ gunicorn>=21.2.0
 | Engineering operations room aesthetic | ✅ Dark ops theme |
 | Real (not simulated) dataset | ✅ Kaggle India Solar Plant |
 
-
-*"If it doesn't look like something from an engineering operations room, the brief was too small."*
